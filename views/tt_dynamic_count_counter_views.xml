@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tt_dynamic_count_counter_view_list" model="ir.ui.view">
+        <field name="name">tt.dynamic.count.counter.list</field>
+        <field name="model">tt.dynamic.count.counter</field>
+        <field name="arch" type="xml">
+            <list string="Dynamic Counts" create="0" edit="0"
+                  decoration-danger="count_requested">
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="rule_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="trigger_type"/>
+                <field name="move_count" string="Completed Movements"
+                       invisible="trigger_type != 'move_count'"/>
+                <field name="cumulative_qty" invisible="trigger_type != 'cumulative_qty'"/>
+                <field name="product_uom_id" string="Base Unit"
+                       invisible="trigger_type != 'cumulative_qty'"/>
+                <field name="threshold"/>
+                <field name="count_requested" widget="boolean_toggle"/>
+                <field name="last_reset_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="tt_dynamic_count_counter_view_search" model="ir.ui.view">
+        <field name="name">tt.dynamic.count.counter.search</field>
+        <field name="model">tt.dynamic.count.counter</field>
+        <field name="arch" type="xml">
+            <search string="Dynamic Counts">
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="rule_id"/>
+                <field name="trigger_type"/>
+                <filter string="Count Requested" name="count_requested"
+                        domain="[('count_requested', '=', True)]"/>
+                <group>
+                    <filter string="Location" name="group_by_location"
+                            context="{'group_by': 'location_id'}"/>
+                    <filter string="Company" name="group_by_company"
+                            context="{'group_by': 'company_id'}"/>
+                    <filter string="Rule" name="group_by_rule"
+                            context="{'group_by': 'rule_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="tt_dynamic_count_counter_action" model="ir.actions.act_window">
+        <field name="name">Dynamic Counts</field>
+        <field name="res_model">tt.dynamic.count.counter</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="tt_dynamic_count_counter_view_search"/>
+        <field name="context">{'search_default_count_requested': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No dynamic counts yet
+            </p>
+            <p>
+                Counters accumulate as qualifying stock movements complete.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="tt_dynamic_count_counter_menu"
+              name="Dynamic Counts"
+              parent="stock.menu_stock_inventory_control"
+              action="tt_dynamic_count_counter_action"
+              groups="stock.group_stock_user"
+              sequence="60"/>
+</odoo>

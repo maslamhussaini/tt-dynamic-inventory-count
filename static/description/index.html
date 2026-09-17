@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dynamic Inventory Count</title>
+<style>
+  :root {
+    --navy: #16324f;
+    --amber: #e8a324;
+    --green: #2fae7c;
+    --bg: #ffffff;
+    --text: #1f2937;
+    --muted: #5b6472;
+    --border: #e5e7eb;
+    --card-bg: #f7f8fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px 80px; }
+  header.hero {
+    background: linear-gradient(135deg, var(--navy), #1f4a70);
+    color: #fff;
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+  header.hero img {
+    width: 72px; height: 72px; border-radius: 16px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    margin-bottom: 18px;
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 32px; }
+  header.hero p.subtitle { margin: 0; font-size: 18px; opacity: 0.9; }
+  h2 {
+    font-size: 22px;
+    margin-top: 48px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    color: var(--navy);
+  }
+  h3 { font-size: 17px; color: var(--navy); margin-top: 24px; }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--border); font-size: 14px; }
+  th { background: var(--card-bg); }
+  code {
+    background: #eef1f4; padding: 2px 6px; border-radius: 4px;
+    font-size: 13px; font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+  }
+  .tag {
+    display: inline-block; background: var(--green); color: #fff;
+    padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    margin-right: 6px;
+  }
+  .tag.amber { background: var(--amber); }
+  .tag.navy { background: var(--navy); }
+  ul { padding-left: 22px; }
+  .note {
+    border-left: 4px solid var(--amber);
+    background: #fff8ec;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .screenshot-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  figure.shot {
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card-bg);
+  }
+  figure.shot img {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid var(--border);
+  }
+  figure.shot figcaption {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text);
+  }
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+  }
+  footer a { color: var(--navy); }
+  .faq dt { font-weight: 600; margin-top: 14px; }
+  .faq dd { margin: 4px 0 0; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img src="icon.png" alt="Dynamic Inventory Count icon">
+  <h1>Dynamic Inventory Count</h1>
+  <p class="subtitle">Activity-Based Cycle Counting for Odoo</p>
+</header>
+
+<div class="wrap">
+
+  <h2>The Problem</h2>
+  <p>
+    Odoo's native scheduled inventory counts work well on a fixed calendar, but a
+    calendar frequency alone doesn't reflect how busy a product or location actually is.
+    A slow-moving item and a fast-moving item on the same schedule end up either
+    over-counted or under-counted relative to their real stock activity.
+  </p>
+
+  <h2>The Solution</h2>
+  <p>
+    Dynamic Inventory Count adds rules that request a physical count once a
+    product/location combination has accumulated enough real stock activity &mdash;
+    not just elapsed time. It works alongside Odoo's native Physical Inventory
+    feature rather than replacing it.
+  </p>
+
+  <h2>Two Trigger Types</h2>
+  <div class="grid-2">
+    <div class="card">
+      <span class="tag navy">Move Count</span>
+      <h3>Completed Movements</h3>
+      <p>Counts the number of completed stock moves for a product at a location.
+      Once the configured whole-number threshold is reached, a count is requested.</p>
+    </div>
+    <div class="card">
+      <span class="tag amber">Cumulative Quantity</span>
+      <h3>Cumulative Activity Quantity</h3>
+      <p>Sums the absolute quantity moved (not net change) for a product at a location,
+      normalized to that product's base unit of measure. Once the configured
+      threshold quantity is reached, a count is requested.</p>
+    </div>
+  </div>
+
+  <h2>How It Works</h2>
+  <ol>
+    <li>An administrator defines one or more <strong>Dynamic Count Rules</strong>, each
+      scoped optionally by product, product category, and/or location, with a trigger
+      type and threshold.</li>
+    <li>As stock moves complete (receipts, deliveries, internal transfers, returns),
+      matching rules accumulate activity in a per-product/location
+      <strong>Dynamic Count Counter</strong>.</li>
+    <li>When a counter's accumulated activity reaches its rule's threshold, that
+      product/location combination is flagged as requiring a count.</li>
+    <li>The count surfaces through Odoo's native Physical Inventory workflow, where
+      stock managers apply the count as usual.</li>
+    <li>After a successful physical inventory application, the relevant counter
+      resets and begins accumulating again.</li>
+  </ol>
+
+  <h2>Movement Type Behavior</h2>
+  <table>
+    <tr><th>Movement Type</th><th>Counted as Activity</th></tr>
+    <tr><td>Incoming receipts</td><td>Yes</td></tr>
+    <tr><td>Customer deliveries</td><td>Yes</td></tr>
+    <tr><td>Internal transfers</td><td>Yes, for matching locations</td></tr>
+    <tr><td>Returns</td><td>Yes</td></tr>
+  </table>
+  <p class="note">
+    Cumulative Quantity triggers use <strong>absolute</strong> activity, meaning both
+    inbound and outbound quantity add to the total &mdash; this is deliberately not
+    a net stock change calculation.
+  </p>
+
+  <h2>Native Physical Inventory Integration</h2>
+  <p>
+    This module does not introduce its own counting UI. Instead, it works with Odoo's
+    existing Physical Inventory / stock.quant counting flow. Existing native count
+    dates already scheduled are not postponed or altered by this module.
+  </p>
+
+  <h2>Unit of Measure Handling</h2>
+  <p>
+    Cumulative Quantity thresholds and accumulated totals are normalized to each
+    product's base unit of measure, so mixed-UoM movements of the same product are
+    compared on a consistent basis.
+  </p>
+
+  <h2>Multi-Company &amp; Scoping</h2>
+  <ul>
+    <li>Rules and counters are isolated per company via standard multi-company record rules.</li>
+    <li>Each rule can be scoped by product, product category (exact match, not
+      recursive across sub-categories), and/or location.</li>
+    <li>Leaving a scope field empty matches everything for that dimension.</li>
+  </ul>
+
+  <h2>Configuration</h2>
+  <ol>
+    <li>Install the module (requires the <code>stock</code> app).</li>
+    <li>Go to <em>Inventory &rarr; Configuration &rarr; Dynamic Count Rules</em>
+      (stock manager access required).</li>
+    <li>Create a rule: set a name, trigger type (Move Count or Cumulative Quantity),
+      a threshold, and optionally a product, product category, and/or location.</li>
+    <li>Save. As matching stock moves complete, activity accumulates automatically.</li>
+    <li>Review pending counts in <em>Inventory &rarr; Dynamic Counts</em> or through
+      the native Physical Inventory list.</li>
+  </ol>
+
+  <h2>Example Workflow</h2>
+  <div class="card">
+    <p><strong>Rule:</strong> Trigger Type = Move Count, Threshold = 20,
+      Product Category = "Fasteners"</p>
+    <p>After 20 completed stock moves touching any product in the Fasteners
+      category at a given location, that product/location pair is flagged for a
+      physical count. Once the count is applied through the native Physical
+      Inventory flow, the counter resets to zero and begins accumulating again.</p>
+  </div>
+
+  <h2>Permissions</h2>
+  <table>
+    <tr><th>Group</th><th>Dynamic Count Rules</th><th>Dynamic Count Counters</th></tr>
+    <tr><td>Inventory / User (<code>stock_user</code>)</td><td>Read-only</td><td>Read-only</td></tr>
+    <tr><td>Inventory / Administrator (<code>stock_manager</code>)</td><td>Full CRUD</td><td>Full CRUD</td></tr>
+  </table>
+
+  <h2>Known V1 Limitations</h2>
+  <ul>
+    <li>Only internal and transit locations are supported for counting scope.</li>
+    <li>Location scoping does not include sub-location hierarchy &mdash; each rule
+      matches a specific location, not its children.</li>
+    <li>Product category scoping is an exact match; it does not recurse into
+      sub-categories.</li>
+    <li>No calendar-based cron rechecking &mdash; activity accumulation is driven
+      entirely by completed stock moves.</li>
+    <li>No Max Days aging trigger and no variance/recount workflow in this version.</li>
+    <li>Product/location pairs with zero quants are not shown in the native
+      Inventory due-list until quants exist.</li>
+  </ul>
+
+  <h2>FAQ</h2>
+  <dl class="faq">
+    <dt>Does this replace scheduled inventory counts?</dt>
+    <dd>No. It complements them by adding activity-based triggers alongside the
+      native calendar-based scheduling already available in Odoo.</dd>
+
+    <dt>Does it support multiple companies?</dt>
+    <dd>Yes, rules and counters are isolated per company via standard record rules.</dd>
+
+    <dt>Can I scope a rule to a whole category tree?</dt>
+    <dd>Not in this version &mdash; category matching is exact, not recursive.</dd>
+
+    <dt>Does it forecast or predict anything?</dt>
+    <dd>No. It only counts completed, actual stock activity that has already
+      occurred.</dd>
+
+    <dt>Is there a dashboard?</dt>
+    <dd>Not in this version. Pending counts are visible through the Dynamic Counts
+      list and the native Physical Inventory views.</dd>
+  </dl>
+
+  <h2>Screenshots</h2>
+  <div class="screenshot-grid">
+    <figure class="shot">
+      <img src="01_dynamic_count_rules.png" alt="Dynamic Count Rules list">
+      <figcaption>Configure movement-based and cumulative-quantity counting rules.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="02_move_count_rule.png" alt="Move Count rule form">
+      <figcaption>Set a completed-movement threshold, scoped to a product and location.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="03_dynamic_counts_due.png" alt="Dynamic Counts view showing counts due">
+      <figcaption>When the threshold is reached, the count becomes due.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="04_native_physical_inventory.png" alt="Native Odoo Physical Inventory screen">
+      <figcaption>TriangleTech integrates directly with Odoo's native Physical Inventory workflow &mdash; no separate counting UI.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="05_counter_reset.png" alt="Dynamic Counts view after counter reset">
+      <figcaption>After a successful physical count, the activity counter resets for the next cycle.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="06_cumulative_quantity_rule.png" alt="Cumulative Quantity rule form">
+      <figcaption>Configure cumulative-quantity based rules for slower per-unit, higher-volume tracking.</figcaption>
+    </figure>
+  </div>
+
+  <footer>
+    <p>Published by <strong>TriangleTech</strong> &middot;
+      <a href="https://triangletech.co">https://triangletech.co</a></p>
+    <p>For support, please contact the publisher through the Odoo Apps listing
+      or the website above.</p>
+  </footer>
+
+</div>
+</body>
+</html>

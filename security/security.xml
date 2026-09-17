@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tt_dynamic_count_rule_company_rule" model="ir.rule">
+        <field name="name">Dynamic Count Rule: multi-company</field>
+        <field name="model_id" ref="model_tt_dynamic_count_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="tt_dynamic_count_counter_company_rule" model="ir.rule">
+        <field name="name">Dynamic Count Counter: multi-company</field>
+        <field name="model_id" ref="model_tt_dynamic_count_counter"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

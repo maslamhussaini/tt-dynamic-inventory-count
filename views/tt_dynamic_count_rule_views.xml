@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tt_dynamic_count_rule_view_list" model="ir.ui.view">
+        <field name="name">tt.dynamic.count.rule.list</field>
+        <field name="model">tt.dynamic.count.rule</field>
+        <field name="arch" type="xml">
+            <list string="Dynamic Count Rules">
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="product_id" optional="show"/>
+                <field name="product_categ_id" optional="show"/>
+                <field name="location_id" optional="show"/>
+                <field name="trigger_type"/>
+                <field name="threshold"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="tt_dynamic_count_rule_view_form" model="ir.ui.view">
+        <field name="name">tt.dynamic.count.rule.form</field>
+        <field name="model">tt.dynamic.count.rule</field>
+        <field name="arch" type="xml">
+            <form string="Dynamic Count Rule">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_counters" type="object"
+                                class="oe_stat_button" icon="fa-list-alt"
+                                invisible="not counter_count">
+                            <field name="counter_count" widget="statinfo" string="Counters"/>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="active" invisible="1"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="trigger_type"/>
+                        <field name="threshold"/>
+                        <div class="text-muted" colspan="2" invisible="trigger_type != 'move_count'">
+                            Trigger after this many completed stock movements (whole number).
+                        </div>
+                        <div class="text-muted" colspan="2" invisible="trigger_type != 'cumulative_qty'">
+                            Trigger after this total absolute quantity of stock activity,
+                            in each product's base unit of measure. Incoming, outgoing and
+                            returned quantities all add activity; this is not net stock change.
+                        </div>
+                    </group>
+                    <group string="Scope (leave a field empty to match everything)">
+                        <field name="product_id" invisible="product_categ_id != False"/>
+                        <field name="product_categ_id" invisible="product_id != False"/>
+                        <div class="text-muted" colspan="2" invisible="not product_id and not product_categ_id">
+                            Product and Product Category are mutually exclusive: clear one to use the other.
+                        </div>
+                        <field name="location_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="tt_dynamic_count_rule_action" model="ir.actions.act_window">
+        <field name="name">Dynamic Count Rules</field>
+        <field name="res_model">tt.dynamic.count.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a dynamic count rule
+            </p>
+            <p>
+                A physical count will be requested once the configured
+                movement count or cumulative quantity of stock activity is reached
+                for a matching product/location. Quantity uses each product's base
+                unit of measure and measures total activity, not net stock change.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="tt_dynamic_count_rule_menu"
+              name="Dynamic Count Rules"
+              parent="stock.menu_stock_config_settings"
+              action="tt_dynamic_count_rule_action"
+              groups="stock.group_stock_manager"
+              sequence="60"/>
+</odoo>

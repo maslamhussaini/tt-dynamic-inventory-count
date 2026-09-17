@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tt_dynamic_count_rule_stock_user,tt.dynamic.count.rule.user,model_tt_dynamic_count_rule,stock.group_stock_user,1,0,0,0
+access_tt_dynamic_count_rule_stock_manager,tt.dynamic.count.rule.manager,model_tt_dynamic_count_rule,stock.group_stock_manager,1,1,1,1
+access_tt_dynamic_count_counter_stock_user,tt.dynamic.count.counter.user,model_tt_dynamic_count_counter,stock.group_stock_user,1,0,0,0
+access_tt_dynamic_count_counter_stock_manager,tt.dynamic.count.counter.manager,model_tt_dynamic_count_counter,stock.group_stock_manager,1,1,1,1
