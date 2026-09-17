@@ -28,8 +28,23 @@ No other dependencies are required.
      location
 3. Save. As matching stock moves complete, the module accumulates activity
    automatically.
-4. Pending counts are visible under **Inventory → Dynamic Counts** and
-   surface through Odoo's native Physical Inventory workflow.
+4. Pending counts are visible on the **Dashboard**, under
+   **Inventory → Dynamic Counts**, and surface through Odoo's native
+   Physical Inventory workflow.
+
+## Dashboard
+
+A dashboard gives stock managers an at-a-glance view of counting activity:
+
+- Active rule count, items due for count, items due by trigger type, and
+  total active counters, shown as summary tiles.
+- **Due Items by Location** — a bar chart of due items across locations.
+- **Due Items by Trigger** — a breakdown of due items by Completed
+  Movements vs. Cumulative Quantity.
+- **Top Due Items** — a table of current due product/location pairs, with
+  trigger type, current activity, threshold, and status.
+- Dashboard tiles and chart segments are clickable and navigate to the
+  corresponding filtered list view.
 
 ## Trigger Types
 

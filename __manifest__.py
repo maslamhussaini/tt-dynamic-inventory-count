@@ -22,7 +22,15 @@ and cumulative-quantity triggers only.
         'security/ir.model.access.csv',
         'views/tt_dynamic_count_rule_views.xml',
         'views/tt_dynamic_count_counter_views.xml',
+        'views/tt_dynamic_count_dashboard_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'tt_dynamic_inventory_count/static/src/dashboard/tt_dynamic_count_dashboard.js',
+            'tt_dynamic_inventory_count/static/src/dashboard/tt_dynamic_count_dashboard.xml',
+            'tt_dynamic_inventory_count/static/src/dashboard/tt_dynamic_count_dashboard.scss',
+        ],
+    },
     'installable': True,
     'application': False,
 }

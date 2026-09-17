@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="tt_dynamic_inventory_count.Dashboard">
+    <div class="o_tt_dyn_count_dashboard">
+        <div class="o_tt_dyn_count_header">
+            <div class="o_tt_dyn_count_header_text">
+                <h2>Dynamic Inventory Count</h2>
+                <div class="o_tt_dyn_count_subtitle">Activity-Based Cycle Counting</div>
+                <div class="o_tt_dyn_count_tagline">Count what moves. Stay in control.</div>
+            </div>
+        </div>
+
+        <div class="o_tt_dyn_count_kpis">
+            <div class="o_tt_dyn_count_kpi o_tt_kpi_blue" t-on-click="onActiveRulesClick">
+                <div class="o_tt_kpi_icon"><i class="fa fa-cogs"/></div>
+                <div class="o_tt_kpi_body">
+                    <div class="o_tt_kpi_value"><t t-esc="state.kpis.active_rules"/></div>
+                    <div class="o_tt_kpi_label">Active Count Rules</div>
+                </div>
+            </div>
+            <div class="o_tt_dyn_count_kpi o_tt_kpi_coral" t-on-click="onDueItemsClick">
+                <div class="o_tt_kpi_icon"><i class="fa fa-exclamation-triangle"/></div>
+                <div class="o_tt_kpi_body">
+                    <div class="o_tt_kpi_value"><t t-esc="state.kpis.due_items"/></div>
+                    <div class="o_tt_kpi_label">Items Due for Count</div>
+                </div>
+            </div>
+            <div class="o_tt_dyn_count_kpi o_tt_kpi_green" t-on-click="onMoveCountClick">
+                <div class="o_tt_kpi_icon"><i class="fa fa-exchange"/></div>
+                <div class="o_tt_kpi_body">
+                    <div class="o_tt_kpi_value"><t t-esc="state.kpis.due_move_count"/></div>
+                    <div class="o_tt_kpi_label">Movement Based Due</div>
+                </div>
+            </div>
+            <div class="o_tt_dyn_count_kpi o_tt_kpi_purple" t-on-click="onQuantityClick">
+                <div class="o_tt_kpi_icon"><i class="fa fa-cubes"/></div>
+                <div class="o_tt_kpi_body">
+                    <div class="o_tt_kpi_value"><t t-esc="state.kpis.due_cumulative_qty"/></div>
+                    <div class="o_tt_kpi_label">Quantity Based Due</div>
+                </div>
+            </div>
+            <div class="o_tt_dyn_count_kpi o_tt_kpi_amber">
+                <div class="o_tt_kpi_icon"><i class="fa fa-th-large"/></div>
+                <div class="o_tt_kpi_body">
+                    <div class="o_tt_kpi_value"><t t-esc="state.kpis.active_counters"/></div>
+                    <div class="o_tt_kpi_label">Total Active Counters</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="o_tt_dyn_count_charts">
+            <div class="o_tt_dyn_count_chart_card">
+                <div class="o_tt_chart_title">Due Items by Location</div>
+                <div class="o_tt_chart_canvas_wrap">
+                    <canvas t-ref="locationChart"/>
+                </div>
+            </div>
+            <div class="o_tt_dyn_count_chart_card">
+                <div class="o_tt_chart_title">Due Items by Trigger</div>
+                <div class="o_tt_donut_row">
+                    <div class="o_tt_chart_canvas_wrap o_tt_donut_canvas_wrap">
+                        <canvas t-ref="triggerChart"/>
+                    </div>
+                    <div class="o_tt_donut_legend">
+                        <div t-if="!state.byTrigger.length" class="text-muted small">No due items.</div>
+                        <div t-foreach="state.triggerLegend" t-as="entry" t-key="entry.label"
+                             class="o_tt_donut_legend_item">
+                            <span class="o_tt_donut_legend_dot" t-attf-style="background:{{entry.color}}"/>
+                            <span class="o_tt_donut_legend_label"><t t-esc="entry.label"/></span>
+                            <span class="o_tt_donut_legend_value">
+                                <t t-esc="entry.value"/> — <t t-esc="entry.pct"/>%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="o_tt_dyn_count_table_card">
+            <div class="o_tt_table_header">
+                <div class="o_tt_chart_title">Top Due Items</div>
+                <button class="btn btn-link" t-on-click="onViewAllClick">View All</button>
+            </div>
+            <table class="table table-sm o_tt_dyn_count_table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Location</th>
+                        <th>Trigger</th>
+                        <th>Current Activity</th>
+                        <th>Threshold</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="state.topDueItems" t-as="item" t-key="item.id">
+                        <td><t t-esc="item.product"/></td>
+                        <td><t t-esc="item.location"/></td>
+                        <td><t t-esc="item.trigger_label"/></td>
+                        <td><t t-esc="item.current_activity"/></td>
+                        <td><t t-esc="item.threshold"/></td>
+                        <td>
+                            <span t-if="item.count_requested" class="badge text-bg-danger">Due</span>
+                            <span t-else="" class="badge text-bg-success">Not Due</span>
+                        </td>
+                    </tr>
+                    <tr t-if="!state.loading and !state.topDueItems.length">
+                        <td colspan="6" class="text-center text-muted">No due items.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</t>
+
+</templates>

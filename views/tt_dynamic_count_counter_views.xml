@@ -11,9 +11,10 @@
                 <field name="rule_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="trigger_type"/>
-                <field name="move_count" string="Completed Movements"
+                <field name="move_count" string="Completed Movements" optional="show"
                        invisible="trigger_type != 'move_count'"/>
-                <field name="cumulative_qty" invisible="trigger_type != 'cumulative_qty'"/>
+                <field name="cumulative_qty" string="Cumulative Quantity" optional="show"
+                       invisible="trigger_type != 'cumulative_qty'"/>
                 <field name="product_uom_id" string="Base Unit"
                        invisible="trigger_type != 'cumulative_qty'"/>
                 <field name="threshold"/>

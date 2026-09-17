@@ -1,4 +1,4 @@
-Copyright (c) TriangleTech. This module ("tt_dynamic_inventory_count" / TriangleTech Dynamic Inventory Count) is published under the license reproduced below, verbatim, as retrieved from the official Odoo documentation (odoo.com).
+Copyright (c) TriangleTech. This module ("tt_dynamic_inventory_count" / TriangleTech Dynamic Inventory Count) is published under the Odoo Proprietary License v1.0 (OPL-1), reproduced below verbatim from the official Odoo documentation (odoo.com), "Odoo Apps" licensing section.
 
 ----------------------------------------------------------------------
 
@@ -16,4 +16,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ----------------------------------------------------------------------
 
-Source: https://www.odoo.com/documentation/17.0/legal/licenses.html (section "Odoo Proprietary License v1.0"). The Odoo 19.0 documentation page (https://www.odoo.com/documentation/19.0/legal/licenses.html) currently presents an equivalent clause under the heading "Odoo Enterprise Edition License v1.0"; the text above was taken from the page carrying the explicit "Odoo Proprietary License v1.0" / OPL-1 heading to match this module's manifest license key exactly.
+Source: https://www.odoo.com/documentation/19.0/legal/licenses.html, "Odoo Apps" section ("Odoo Proprietary License v1.0").
