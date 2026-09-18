@@ -1,5 +1,5 @@
 {
-    'name': "TriangleTech Dynamic Inventory Count",
+    'name': "Dynamic Inventory Count",
     'summary': "Trigger physical inventory counts from actual stock movement activity.",
     'description': """
 Extends Inventory so a physical count can be requested once a configurable
