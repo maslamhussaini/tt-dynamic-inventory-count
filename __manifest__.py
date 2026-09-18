@@ -14,7 +14,7 @@ and cumulative-quantity triggers only.
     'maintainer': "TriangleTech",
     'website': "https://triangletech.co",
     'category': 'Supply Chain/Inventory',
-    'version': '19.0.2.0.0',
+    'version': '19.0.2.0.1',
     'license': 'OPL-1',
     'price': 39.0,
     'currency': 'USD',
