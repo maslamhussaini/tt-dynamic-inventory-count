@@ -18,6 +18,7 @@ and cumulative-quantity triggers only.
     'license': 'OPL-1',
     'price': 39.0,
     'currency': 'USD',
+    'images': ['static/description/banner.png'],
     'depends': ['stock'],
     'data': [
         'security/security.xml',
