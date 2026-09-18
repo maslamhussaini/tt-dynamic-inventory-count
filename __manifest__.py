@@ -16,6 +16,8 @@ and cumulative-quantity triggers only.
     'category': 'Supply Chain/Inventory',
     'version': '19.0.2.0.0',
     'license': 'OPL-1',
+    'price': 39.0,
+    'currency': 'USD',
     'depends': ['stock'],
     'data': [
         'security/security.xml',
